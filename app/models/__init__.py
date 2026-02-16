@@ -3,7 +3,9 @@ from app.models.schemas import(
     IngestResponse,
     QueryRequest,
     QueryResponse,
-    ChunckSource
+    ChunckSource,
+    EmbeddingRequest,
+    EmbeddingResponse
 )
 
 __all__ = [
@@ -12,4 +14,6 @@ __all__ = [
     "QueryRequest",
     "QueryResponse",
     "ChunkSource",
+    "EmbeddingRequest",
+    "EmbeddingResponse",
 ]

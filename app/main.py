@@ -1,12 +1,16 @@
-from fastapi import FastAPI, Depends
-from openai import OpenAI
+from typing import Annotated
+from fastapi import FastAPI, Depends, HTTPException
+from openai import OpenAI, OpenAIError
 from app.models.schemas import (
     IngestRequest,
     IngestResponse,
     QueryRequest,
-    QueryResponse
+    QueryResponse,
+    ChunckSource,
+    EmbeddingRequest,
+    EmbeddingResponse
 )
-from app.rag.llm_service import get_openai_client, chat
+from app.rag.llm_service import get_openai_client, chat, generate_embedding
 
 app = FastAPI(title="RAG Code Assistant", version="0.1.0")
 
@@ -24,8 +28,9 @@ def ingest(request: IngestRequest):
     )
 
 @app.post("/query", response_model=QueryResponse)
-def query(request: QueryRequest,
-    client: OpenAI = Depends(get_openai_client),
+def query(
+    request: QueryRequest,
+    client: Annotated[OpenAI, Depends(get_openai_client)],
 ):
     result = chat(client, request.question)
     
@@ -33,4 +38,17 @@ def query(request: QueryRequest,
         answer=result["answer"],
         sources=[],
         tokens_used=result["tokens_used"]
+    )
+
+@app.post("/embedding", response_model=EmbeddingResponse)
+def embedding(
+    request: EmbeddingRequest,
+    client: Annotated[OpenAI, Depends(get_openai_client)],
+):
+    vector = generate_embedding(client, request.text)
+
+    return EmbeddingResponse(
+        embedding=vector,
+        dimensions=len(vector),
+        text_preview=request.text[:100],
     )

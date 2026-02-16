@@ -31,3 +31,13 @@ class QueryResponse(BaseModel):
     answer: str
     sources: list[ChunckSource]
     tokens_used: int
+
+class EmbeddingRequest(BaseModel):
+    """Request to generate an embedding."""
+    text: str = Field(..., min_length=1, max_length=5000)
+
+class EmbeddingResponse(BaseModel):
+    """Response with embeddings vector."""
+    embedding: list[float]
+    dimensions: int
+    text_preview: str = Field(..., max_length=100)
