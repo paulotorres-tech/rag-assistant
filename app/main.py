@@ -1,10 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
+from openai import OpenAI
 from app.models.schemas import (
     IngestRequest,
     IngestResponse,
     QueryRequest,
     QueryResponse
 )
+from app.rag.llm_service import get_openai_client, chat
 
 app = FastAPI(title="RAG Code Assistant", version="0.1.0")
 
@@ -22,10 +24,13 @@ def ingest(request: IngestRequest):
     )
 
 @app.post("/query", response_model=QueryResponse)
-def query(request: QueryRequest):
-    # Placeholder - we'll implement this later (Week 2)
+def query(request: QueryRequest,
+    client: OpenAI = Depends(get_openai_client),
+):
+    result = chat(client, request.question)
+    
     return QueryResponse(
-        answer="Not implement yet",
+        answer=result["answer"],
         sources=[],
-        tokens_used=0
+        tokens_used=result["tokens_used"]
     )
