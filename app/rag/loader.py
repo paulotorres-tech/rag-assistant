@@ -53,7 +53,7 @@ def load_directory(
     """Load all matching files from a directory."""
 
     if extensions is None:
-        extensions = list[EXTENSION_MAP.keys()]
+        extensions = list(EXTENSION_MAP.keys())
 
     root = Path(directory)
     if not root.exists():
@@ -64,7 +64,8 @@ def load_directory(
         for file_path in root.rglob(f"*{ext}"):
             # Skip hidden folders and common noise
             parts = file_path.parts
-            if any(p.startswith(".") or p in ("node_modules", "__pycache__", ".venv", "venv") for p in parts):
+            skip_dirs = {"node_modules", "__pycache__", ".venv", "venv", ".git"}
+            if any(part in skip_dirs for part in file_path.parent.parts):
                 continue
 
             doc = load_file(file_path)

@@ -9,7 +9,7 @@ class Chunk:
     file_name:str
     language:str
     chunk_index:int
-    start_line=int
+    start_line:int
     total_chunks:int
 
     def to_metadata(self) -> dict:
@@ -47,7 +47,7 @@ def chunk_document(
                 language=document.language,
                 chunk_index=chunk_index,
                 start_line=start + 1,
-                total_chunks=0,
+                total_chunks=0
             ))
             chunk_index += 1
         start += chunk_size - chunk_overlap
