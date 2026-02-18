@@ -2,4 +2,8 @@ openai
 python-dotenv
 fastapi
 uvicorn
-pydantic_settings
+pydantic-settings
+chromadb
+langchain
+langchain-community
+langchain-openai
